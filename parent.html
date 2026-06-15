@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>張老師專業心算班 — 家長查詢</title>
+<style>
+  :root{--bg:#F4F2ED;--surface:#FFF;--border:#E2DFD6;--text:#1A1916;--text2:#6B6860;--text3:#9B998F;--accent:#1D6B4A;--accent-light:#E3F4EC;--red:#C23B2E;--red-light:#FDECEA;--amber:#C47D0E;--amber-light:#FEF3DC;--radius:14px;--radius-sm:8px}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:'PingFang TC','Noto Sans TC',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:20px 16px 40px}
+  .header{text-align:center;margin-bottom:24px}
+  .logo{font-size:32px;margin-bottom:6px}
+  .school{font-size:18px;font-weight:700;color:var(--text)}
+  .subtitle{font-size:13px;color:var(--text3);margin-top:3px}
+  .card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:20px;margin-bottom:14px}
+  .student-banner{display:flex;align-items:center;gap:14px}
+  .avatar{width:56px;height:56px;border-radius:50%;background:var(--accent-light);color:var(--accent);font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .student-name{font-size:22px;font-weight:700;color:var(--accent)}
+  .student-sub{font-size:13px;color:var(--text3);margin-top:3px}
+  .stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+  .stat{background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border);padding:14px;text-align:center}
+  .stat-val{font-size:24px;font-weight:700;margin:4px 0 2px}
+  .stat-lbl{font-size:11px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+  .section-title{font-size:13px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+  .attend-item{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border)}
+  .attend-item:last-child{border-bottom:none}
+  .attend-date{font-size:13.5px;font-weight:500}
+  .attend-time{font-size:12px;color:var(--text3)}
+  .tag{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:500}
+  .tag-green{background:var(--accent-light);color:var(--accent)}
+  .tag-red{background:var(--red-light);color:var(--red)}
+  .tag-amber{background:var(--amber-light);color:var(--amber)}
+  .pay-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+  .pay-row:last-child{border-bottom:none}
+  .pay-info{font-size:13.5px}
+  .pay-sub{font-size:12px;color:var(--text3);margin-top:2px}
+  .pay-amount{font-size:14px;font-weight:600}
+  .footer{text-align:center;font-size:12px;color:var(--text3);margin-top:20px}
+  .not-found{text-align:center;padding:60px 20px}
+  .not-found-icon{font-size:48px;margin-bottom:12px}
+  .search-box{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:20px;margin-bottom:14px}
+  .search-title{font-size:15px;font-weight:600;margin-bottom:14px}
+  select,input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:15px;font-family:inherit;color:var(--text);background:var(--surface);outline:none;margin-bottom:10px}
+  select:focus,input:focus{border-color:var(--accent)}
+  .btn{width:100%;padding:13px;background:var(--accent);color:white;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
+  .btn:hover{opacity:.9}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">🧮</div>
+  <div class="school">張老師專業心算班</div>
+  <div class="subtitle">家長查詢系統</div>
+</div>
+
+<div id="app"></div>
+
+<div class="footer">張老師專業心算班 ・ 家長專屬查詢頁面</div>
+
+<script>
+const STUDENTS = [
+  {id:1,name:'廖晨淇',subjects:['心算','數學']},
+  {id:2,name:'張恩瑀',subjects:['心算']},
+  {id:3,name:'張芮熏',subjects:['心算']},
+  {id:4,name:'李丹宇',subjects:['心算']},
+  {id:5,name:'劉芮語',subjects:['英文']},
+  {id:6,name:'劉芷熏',subjects:['心算']},
+  {id:7,name:'古安永',subjects:['心算','數學']},
+  {id:8,name:'古安辰',subjects:['心算','數學']},
+  {id:9,name:'吳澄樺',subjects:['心算']},
+  {id:10,name:'楊晴予',subjects:['心算']},
+  {id:11,name:'楊光騰',subjects:['心算']},
+  {id:12,name:'沈宇翊',subjects:['心算','數學']},
+  {id:13,name:'洪睿鈞',subjects:['心算']},
+  {id:14,name:'簡芊嬅',subjects:['心算']},
+  {id:15,name:'胡成睿',subjects:['英文']},
+  {id:16,name:'蔡亦安',subjects:['心算']},
+  {id:17,name:'蔡芮殷',subjects:['心算']},
+  {id:19,name:'趙家樂',subjects:['心算']},
+  {id:20,name:'郭壕霆',subjects:['數學','英文']},
+  {id:21,name:'郭東易',subjects:['數學','英文']},
+  {id:22,name:'鄭宥澄',subjects:['心算']},
+  {id:23,name:'鄭智嬣',subjects:['心算']},
+  {id:24,name:'陳俊瑋',subjects:['心算']},
+  {id:25,name:'陳品齊',subjects:['心算']},
+  {id:26,name:'陳姵妮',subjects:['心算']},
+  {id:27,name:'陳希',subjects:['心算','英文']},
+  {id:28,name:'陳榆',subjects:['心算','英文']},
+  {id:29,name:'陳沅鴻',subjects:['數學']},
+  {id:30,name:'陳琮澔',subjects:['心算']},
+  {id:31,name:'陳芷榆',subjects:['心算']},
+  {id:32,name:'黃亭熙',subjects:['心算']},
+  {id:33,name:'黎宣榆',subjects:['心算']},
+  {id:34,name:'林宇臣',subjects:['心算']},
+  {id:35,name:'林洹任',subjects:['心算']},
+  {id:37,name:'李秉恩',subjects:['心算']},
+  {id:38,name:'陳彥橙',subjects:['心算']},
+  {id:39,name:'陳兪璇',subjects:['心算']},
+  {id:40,name:'賴建華',subjects:['心算']},
+  {id:41,name:'宋俞蓁',subjects:['心算']},
+  {id:43,name:'賴彥承',subjects:['心算']},
+  {id:44,name:'陳品齊安親',subjects:['安親']},
+  {id:45,name:'方佑安',subjects:['心算']},
+  {id:46,name:'黃偉銘',subjects:['英文']},
+];
+
+const CHECKINS = [
+  {date:'2026-03-31',name:'蔡芮殷',time:'09:37'},{date:'2026-03-31',name:'劉芷熏',time:'09:59'},{date:'2026-03-31',name:'鄭宥澄',time:'10:05'},{date:'2026-03-31',name:'吳澄樺',time:'10:07'},{date:'2026-03-31',name:'陳希',time:'10:08'},{date:'2026-03-31',name:'陳榆',time:'10:09'},{date:'2026-03-31',name:'陳芷榆',time:'10:15'},{date:'2026-03-31',name:'洪睿鈞',time:'10:17'},{date:'2026-03-31',name:'陳姵妮',time:'10:19'},{date:'2026-03-31',name:'李秉恩',time:'10:31'},
+  {date:'2026-04-01',name:'廖晨淇',time:'09:19'},{date:'2026-04-01',name:'陳琮澔',time:'09:52'},{date:'2026-04-01',name:'李丹宇',time:'10:03'},{date:'2026-04-01',name:'黃亭熙',time:'10:05'},{date:'2026-04-01',name:'張芮熏',time:'10:07'},{date:'2026-04-01',name:'郭壕霆',time:'10:10'},{date:'2026-04-01',name:'陳希',time:'10:14'},{date:'2026-04-01',name:'沈宇翊',time:'10:17'},{date:'2026-04-01',name:'黎宣榆',time:'10:25'},{date:'2026-04-01',name:'陳芷榆',time:'10:27'},{date:'2026-04-01',name:'陳姵妮',time:'10:29'},{date:'2026-04-01',name:'趙家樂',time:'10:30'},{date:'2026-04-01',name:'陳榆',time:'10:31'},{date:'2026-04-01',name:'陳品齊',time:'10:37'},
+  {date:'2026-04-02',name:'陳俊瑋',time:'00:29'},{date:'2026-04-02',name:'張恩瑀',time:'00:32'},{date:'2026-04-02',name:'林宇臣',time:'00:34'},{date:'2026-04-02',name:'李丹宇',time:'00:37'},{date:'2026-04-02',name:'蔡亦安',time:'00:38'},{date:'2026-04-02',name:'簡芊嬅',time:'00:37'},{date:'2026-04-02',name:'陳琮澔',time:'00:35'},{date:'2026-04-02',name:'陳沅鴻',time:'00:34'},{date:'2026-04-02',name:'郭壕霆',time:'00:35'},{date:'2026-04-02',name:'洪睿鈞',time:'00:39'},{date:'2026-04-02',name:'劉芷熏',time:'00:41'},
+  {date:'2026-05-19',name:'蔡芮殷',time:'09:35'},{date:'2026-05-19',name:'鄭宥澄',time:'09:50'},{date:'2026-05-19',name:'洪睿鈞',time:'10:06'},{date:'2026-05-19',name:'陳榆',time:'10:12'},{date:'2026-05-19',name:'陳希',time:'10:13'},{date:'2026-05-19',name:'李秉恩',time:'10:16'},{date:'2026-05-19',name:'劉芷熏',time:'10:38'},{date:'2026-05-19',name:'賴彥承',time:'10:47'},
+  {date:'2026-05-20',name:'沈宇翊',time:'09:25'},{date:'2026-05-20',name:'蔡芮殷',time:'09:31'},{date:'2026-05-20',name:'陳希英文',time:'10:01'},{date:'2026-05-20',name:'陳榆英文',time:'10:02'},{date:'2026-05-20',name:'黃亭熙',time:'10:05'},{date:'2026-05-20',name:'林宇臣',time:'10:25'},{date:'2026-05-20',name:'張恩瑀',time:'10:28'},{date:'2026-05-20',name:'黎宣榆',time:'10:31'},
+  {date:'2026-06-02',name:'陳俊瑋',time:'00:35'},{date:'2026-06-02',name:'鄭智嬣',time:'00:37'},{date:'2026-06-02',name:'簡芊嬅',time:'00:37'},{date:'2026-06-02',name:'洪睿鈞',time:'00:38'},{date:'2026-06-02',name:'賴彥承',time:'00:38'},{date:'2026-06-02',name:'賴建華',time:'00:38'},{date:'2026-06-02',name:'黃亭熙',time:'00:39'},{date:'2026-06-02',name:'郭東易數學',time:'00:38'},{date:'2026-06-02',name:'郭壕霆數學',time:'00:38'},{date:'2026-06-02',name:'陳品齊',time:'00:40'},
+];
+
+const PAYMENTS = [
+  {name:'張恩瑀',subject:'心算',date:'2026-06-02',amount:15000,status:'已繳'},
+  {name:'古安辰',subject:'心算',date:'2026-06-02',amount:15000,status:'已繳'},
+  {name:'劉芷熏',subject:'心算',date:'2026-06-02',amount:15000,status:'已繳'},
+  {name:'蔡芮殷',subject:'心算',date:'2026-05-24',amount:15000,status:'已繳'},
+  {name:'陳品齊',subject:'心算',date:'2026-05-19',amount:15000,status:'已繳'},
+  {name:'洪睿鈞',subject:'心算',date:'2026-05-13',amount:15000,status:'已繳'},
+  {name:'陳希',subject:'心算',date:'2026-04-25',amount:15000,status:'已繳'},
+  {name:'陳榆',subject:'心算',date:'2026-04-25',amount:15000,status:'已繳'},
+  {name:'李丹宇',subject:'心算',date:'2026-05-10',amount:15000,status:'已繳'},
+  {name:'吳澄樺',subject:'心算',date:'2026-05-03',amount:15000,status:'已繳'},
+  {name:'黎宣榆',subject:'心算',date:'2026-05-03',amount:15000,status:'已繳'},
+  {name:'鄭宥澄',subject:'心算',date:'2026-04-17',amount:15000,status:'已繳'},
+  {name:'黃亭熙',subject:'心算',date:'2026-04-18',amount:15000,status:'已繳'},
+  {name:'陳芷榆',subject:'心算',date:'2026-04-17',amount:15000,status:'已繳'},
+  {name:'陳姵妮',subject:'心算',date:'2026-04-17',amount:15000,status:'已繳'},
+  {name:'李秉恩',subject:'心算',date:'2026-04-26',amount:15000,status:'已繳'},
+  {name:'賴彥承',subject:'心算',date:'2026-05-04',amount:15000,status:'已繳'},
+  {name:'簡芊嬅',subject:'心算',date:'2026-05-04',amount:15000,status:'已繳'},
+  {name:'趙家樂',subject:'心算',date:'2026-03-21',amount:15000,status:'已繳'},
+  {name:'鄭智嬣',subject:'心算',date:'2026-03-17',amount:15000,status:'已繳'},
+  {name:'陳俊瑋',subject:'心算',date:'2026-04-27',amount:15000,status:'已繳'},
+  {name:'廖晨淇',subject:'數學',date:'2026-05-11',amount:15000,status:'已繳'},
+  {name:'沈宇翊',subject:'數學',date:'2026-04-30',amount:15000,status:'已繳'},
+  {name:'郭壕霆',subject:'英文',date:'2026-05-09',amount:18000,status:'已繳'},
+  {name:'郭東易',subject:'英文',date:'2026-05-10',amount:15000,status:'已繳'},
+  {name:'胡成睿',subject:'英文',date:'2026-05-10',amount:24000,status:'已繳'},
+  {name:'黃偉銘',subject:'英文',date:'2026-05-17',amount:26000,status:'已繳'},
+  {name:'陳沅鴻',subject:'數學',date:'2026-04-19',amount:15000,status:'已繳'},
+  {name:'古安永',subject:'數學',date:'2026-05-10',amount:15000,status:'已繳'},
+  {name:'方佑安',subject:'心算',date:'2026-05-02',amount:16000,status:'已繳'},
+  {name:'林宇臣',subject:'心算',date:'2026-04-19',amount:15000,status:'已繳'},
+  {name:'林洹任',subject:'心算',date:'2026-05-21',amount:15000,status:'已繳'},
+  {name:'賴建華',subject:'心算',date:'2026-05-13',amount:15000,status:'已繳'},
+  {name:'宋俞蓁',subject:'心算',date:'2026-05-19',amount:15000,status:'已繳'},
+  {name:'陳兪璇',subject:'心算',date:'2026-05-14',amount:15000,status:'已繳'},
+  {name:'陳彥橙',subject:'心算',date:'2026-05-14',amount:15000,status:'已繳'},
+  {name:'陳琮澔',subject:'心算',date:'2026-04-30',amount:15000,status:'已繳'},
+  {name:'蔡亦安',subject:'心算',date:'2026-04-11',amount:15000,status:'已繳'},
+  {name:'陳品齊安親',subject:'安親',date:'2026-05-16',amount:16800,status:'已繳'},
+];
+
+function getParams(){
+  const p={};
+  location.search.slice(1).split('&').forEach(pair=>{const[k,v]=pair.split('=');if(k)p[decodeURIComponent(k)]=decodeURIComponent(v||'');});
+  return p;
+}
+
+function render(){
+  const params=getParams();
+  const studentId=params.id?parseInt(params.id):null;
+  const app=document.getElementById('app');
+
+  if(!studentId){
+    // 顯示選擇學生的頁面
+    app.innerHTML=`
+      <div class="search-box">
+        <div class="search-title">請選擇學生姓名</div>
+        <select id="student-select" onchange="goToStudent()">
+          <option value="">— 請選擇 —</option>
+          ${STUDENTS.map(s=>`<option value="${s.id}">${s.name}</option>`).join('')}
+        </select>
+        <button class="btn" onclick="goToStudent()">查看記錄</button>
+      </div>`;
+    return;
+  }
+
+  const student=STUDENTS.find(s=>s.id===studentId);
+  if(!student){
+    app.innerHTML=`<div class="not-found"><div class="not-found-icon">🔍</div><div style="font-size:16px;font-weight:600">找不到學生資料</div><div style="margin-top:8px;color:var(--text3)">請聯絡張老師確認</div></div>`;
+    return;
+  }
+
+  const myCheckins=CHECKINS.filter(c=>c.name===student.name||c.name.includes(student.name)).sort((a,b)=>b.date.localeCompare(a.date));
+  const myPayments=PAYMENTS.filter(p=>p.name===student.name||p.name.includes(student.name)).sort((a,b)=>b.date.localeCompare(a.date));
+  const thisMonth=new Date().toISOString().slice(0,7);
+  const monthCheckins=myCheckins.filter(c=>c.date.startsWith(thisMonth));
+  const latestPay=myPayments[0];
+
+  app.innerHTML=`
+    <div class="card">
+      <div class="student-banner">
+        <div class="avatar">${student.name[0]}</div>
+        <div>
+          <div class="student-name">${student.name} 同學</div>
+          <div class="student-sub">${student.subjects.join(' ・ ')}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat">
+        <div class="stat-lbl">本月出席</div>
+        <div class="stat-val" style="color:var(--accent)">${monthCheckins.length}</div>
+        <div style="font-size:11px;color:var(--text3)">次</div>
+      </div>
+      <div class="stat">
+        <div class="stat-lbl">累計出席</div>
+        <div class="stat-val" style="color:#6B3FA0">${myCheckins.length}</div>
+        <div style="font-size:11px;color:var(--text3)">次</div>
+      </div>
+      <div class="stat">
+        <div class="stat-lbl">繳費狀態</div>
+        <div class="stat-val" style="font-size:16px;margin-top:6px">${latestPay&&latestPay.status==='已繳'?'✅':'⚠️'}</div>
+        <div style="font-size:11px;color:var(--text3)">${latestPay?latestPay.status:'未知'}</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">最近出席記錄</div>
+      ${myCheckins.slice(0,10).length?myCheckins.slice(0,10).map(c=>`
+        <div class="attend-item">
+          <div>
+            <div class="attend-date">${c.date}</div>
+            <div class="attend-time">${c.time?'簽到時間：'+c.time:''}</div>
+          </div>
+          <span class="tag tag-green">✓ 出席</span>
+        </div>
+      `).join(''):'<div style="text-align:center;padding:20px;color:var(--text3)">尚無出席記錄</div>'}
+    </div>
+
+    <div class="card">
+      <div class="section-title">繳費記錄</div>
+      ${myPayments.length?myPayments.slice(0,5).map(p=>`
+        <div class="pay-row">
+          <div>
+            <div class="pay-info">${p.subject} ・ ${p.date}</div>
+            <div class="pay-sub">${p.amount/1000}K / ${p.lessons||12} 堂</div>
+          </div>
+          <div style="text-align:right">
+            <div class="pay-amount">NT$${p.amount.toLocaleString()}</div>
+            <span class="tag ${p.status==='已繳'?'tag-green':'tag-red'}" style="margin-top:4px">${p.status}</span>
+          </div>
+        </div>
+      `).join(''):'<div style="text-align:center;padding:20px;color:var(--text3)">尚無繳費記錄</div>'}
+    </div>`;
+}
+
+function goToStudent(){
+  const sel=document.getElementById('student-select');
+  if(sel&&sel.value) location.href='?id='+sel.value;
+}
+
+render();
+</script>
+</body>
+</html>
