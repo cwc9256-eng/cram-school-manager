@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<!-- saved from url=(0057)file:///Users/carrie/Downloads/cram_school_manager_1.html -->
+<html lang="zh-TW"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>張老師專業心算班管理系統</title>
+<style>
+  :root {
+    --bg:#F7F6F2;--surface:#FFF;--surface2:#F0EEE8;--border:#E2DFD6;
+    --text:#1A1916;--text2:#6B6860;--text3:#9B998F;
+    --accent:#2D6BE4;--accent-light:#EBF0FD;--accent-dark:#1A4DB8;
+    --green:#1B8C5A;--green-light:#E6F5EE;
+    --amber:#C47D0E;--amber-light:#FEF3DC;
+    --red:#C23B2E;--red-light:#FDECEA;
+    --purple:#6B3FA0;--purple-light:#F1EAF9;
+    --radius:10px;--radius-sm:6px;
+    --shadow:0 1px 4px rgba(0,0,0,.08);--shadow-md:0 4px 16px rgba(0,0,0,.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI','PingFang TC','Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;min-height:100vh}
+  .app{display:flex;min-height:100vh}
+  .sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100}
+  .main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+  .topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+  .content{padding:28px;flex:1}
+  .logo{padding:20px 20px 12px;border-bottom:1px solid var(--border)}
+  .logo-title{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.3px}
+  .logo-sub{font-size:11px;color:var(--text3);margin-top:1px}
+  .nav{padding:12px 10px;flex:1;overflow-y:auto}
+  .nav-section{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;padding:10px 10px 4px}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--radius-sm);cursor:pointer;color:var(--text2);font-size:13.5px;transition:all .15s;margin-bottom:1px}
+  .nav-item:hover{background:var(--surface2);color:var(--text)}
+  .nav-item.active{background:var(--accent-light);color:var(--accent);font-weight:500}
+  .nav-item .icon{width:18px;text-align:center;font-size:15px;flex-shrink:0}
+  .nav-badge{margin-left:auto;background:var(--red);color:white;font-size:10px;font-weight:600;padding:1px 6px;border-radius:10px}
+  .sidebar-footer{padding:14px 16px;border-top:1px solid var(--border);font-size:12px;color:var(--text3)}
+  .page-title{font-size:17px;font-weight:600;color:var(--text)}
+  .topbar-actions{display:flex;align-items:center;gap:10px}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .15s}
+  .btn-primary{background:var(--accent);color:white}
+  .btn-primary:hover{background:var(--accent-dark)}
+  .btn-outline{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+  .btn-outline:hover{background:var(--surface2)}
+  .btn-ghost{background:transparent;color:var(--text2);padding:7px 10px}
+  .btn-ghost:hover{background:var(--surface2);color:var(--text)}
+  .btn-sm{padding:5px 10px;font-size:12px}
+  .btn-success{background:var(--green-light);color:var(--green)}
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+  .stat-card{background:var(--surface);border-radius:var(--radius);padding:18px 20px;border:1px solid var(--border);box-shadow:var(--shadow)}
+  .stat-label{font-size:12px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+  .stat-value{font-size:28px;font-weight:700;margin:4px 0 2px;letter-spacing:-.5px}
+  .stat-sub{font-size:12px;color:var(--text3)}
+  .stat-icon{font-size:22px;margin-bottom:8px}
+  .card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden}
+  .card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+  .card-title{font-size:14px;font-weight:600}
+  .card-body{padding:20px}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .table-wrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse}
+  th{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:10px 14px;text-align:left;background:var(--surface2);border-bottom:1px solid var(--border)}
+  td{padding:11px 14px;border-bottom:1px solid var(--border);font-size:13.5px;vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#FAFAF8}
+  .td-actions{display:flex;gap:6px}
+  .tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11.5px;font-weight:500}
+  .tag-blue{background:var(--accent-light);color:var(--accent)}
+  .tag-green{background:var(--green-light);color:var(--green)}
+  .tag-amber{background:var(--amber-light);color:var(--amber)}
+  .tag-red{background:var(--red-light);color:var(--red)}
+  .tag-purple{background:var(--purple-light);color:var(--purple)}
+  .tag-gray{background:var(--surface2);color:var(--text2)}
+  .form-group{margin-bottom:14px}
+  .form-label{display:block;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px}
+  .form-input{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13.5px;color:var(--text);background:var(--surface);transition:border .15s;outline:none;font-family:inherit}
+  .form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(45,107,228,.1)}
+  select.form-input{cursor:pointer}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+  .modal-overlay.open{opacity:1;pointer-events:all}
+  .modal{background:var(--surface);border-radius:14px;width:560px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-md);transform:translateY(12px);transition:transform .2s}
+  .modal-overlay.open .modal{transform:translateY(0)}
+  .modal-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+  .modal-title{font-size:15px;font-weight:600}
+  .modal-body{padding:20px 24px}
+  .modal-footer{padding:14px 24px 20px;display:flex;gap:10px;justify-content:flex-end}
+  .modal-close{background:none;border:none;font-size:18px;cursor:pointer;color:var(--text3);padding:2px 6px;border-radius:4px}
+  .tabs{display:flex;gap:2px;background:var(--surface2);border-radius:var(--radius-sm);padding:3px;margin-bottom:20px;width:fit-content}
+  .tab{padding:6px 16px;border-radius:5px;cursor:pointer;font-size:13px;color:var(--text2);transition:all .15s;font-weight:500}
+  .tab.active{background:var(--surface);color:var(--text);box-shadow:var(--shadow)}
+  .search-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+  .search-wrap{position:relative;flex:1;max-width:280px}
+  .search-input{flex:1;padding:8px 12px 8px 36px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13.5px;color:var(--text);background:var(--surface);outline:none;font-family:inherit;width:100%}
+  .search-input:focus{border-color:var(--accent)}
+  .search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:13px}
+  .avatar{width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+  .avatar-blue{background:var(--accent-light);color:var(--accent)}
+  .avatar-green{background:var(--green-light);color:var(--green)}
+  .avatar-purple{background:var(--purple-light);color:var(--purple)}
+  .avatar-amber{background:var(--amber-light);color:var(--amber)}
+  .finance-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+  .finance-card{padding:18px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface)}
+  .finance-amount{font-size:22px;font-weight:700;letter-spacing:-.5px;margin:4px 0 2px}
+  .progress-bar{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden}
+  .progress-fill{height:100%;border-radius:3px;background:var(--accent);transition:width .3s}
+  .ai-panel{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);display:flex;flex-direction:column;height:420px}
+  .ai-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+  .ai-msg{max-width:85%}
+  .ai-msg.user{align-self:flex-end}
+  .ai-msg.bot{align-self:flex-start}
+  .ai-bubble{padding:10px 14px;border-radius:12px;font-size:13.5px;line-height:1.55}
+  .ai-msg.user .ai-bubble{background:var(--accent);color:white;border-bottom-right-radius:4px}
+  .ai-msg.bot .ai-bubble{background:var(--surface2);color:var(--text);border-bottom-left-radius:4px}
+  .ai-input-row{padding:12px 14px;border-top:1px solid var(--border);display:flex;gap:8px}
+  .ai-input{flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13.5px;font-family:inherit;outline:none;resize:none}
+  .ai-input:focus{border-color:var(--accent)}
+  .quick-btns{padding:0 14px 10px;display:flex;gap:6px;flex-wrap:wrap}
+  .quick-btn{padding:4px 10px;background:var(--accent-light);color:var(--accent);border:none;border-radius:20px;font-size:12px;cursor:pointer;font-family:inherit}
+  .quick-btn:hover{background:#d6e4fb}
+  .typing{display:flex;gap:4px;align-items:center;padding:10px 14px}
+  .typing span{width:7px;height:7px;background:var(--text3);border-radius:50%;animation:bounce 1.2s infinite}
+  .typing span:nth-child(2){animation-delay:.2s}
+  .typing span:nth-child(3){animation-delay:.4s}
+  @keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+  .attend-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+  .attend-card{border:2px solid var(--border);border-radius:var(--radius-sm);padding:12px 10px;text-align:center;cursor:pointer;transition:all .15s}
+  .attend-card:hover{border-color:var(--accent)}
+  .attend-card.present{border-color:var(--green);background:var(--green-light)}
+  .attend-card.absent{border-color:var(--red);background:var(--red-light)}
+  .attend-card.late{border-color:var(--amber);background:var(--amber-light)}
+  .attend-name{font-size:13px;font-weight:500;margin-bottom:6px}
+  .attend-status{font-size:11px;font-weight:600;text-transform:uppercase}
+  .attend-card.present .attend-status{color:var(--green)}
+  .attend-card.absent .attend-status{color:var(--red)}
+  .attend-card.late .attend-status{color:var(--amber)}
+  .toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:white;padding:12px 20px;border-radius:var(--radius-sm);font-size:13.5px;z-index:9999;opacity:0;transform:translateY(8px);transition:all .25s;box-shadow:var(--shadow-md)}
+  .toast.show{opacity:1;transform:translateY(0)}
+  .hidden{display:none!important}
+  .mt-4{margin-top:16px}
+  .mb-4{margin-bottom:16px}
+  .flex{display:flex}
+  .items-center{align-items:center}
+  .gap-2{gap:8px}
+  .ml-auto{margin-left:auto}
+  .text-sm{font-size:12.5px}
+  .text-xs{font-size:11.5px}
+  .text-muted{color:var(--text3)}
+  .font-semibold{font-weight:600}
+  .checkin-history{max-height:300px;overflow-y:auto}
+  .checkin-row{display:flex;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border);gap:10px;font-size:13px}
+  .checkin-row:last-child{border-bottom:none}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-title">🧮 張老師專業心算班</div>
+    <div class="logo-sub">管理系統 v2.0</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-section">主選單</div>
+    <div class="nav-item active" onclick="showPage(&#39;dashboard&#39;)"><span class="icon">🏠</span> Dashboard</div>
+    <div class="nav-item" onclick="showPage(&#39;students&#39;)"><span class="icon">👥</span> 學生管理</div>
+    <div class="nav-item" onclick="showPage(&#39;checkin&#39;)"><span class="icon">✅</span> 簽到記錄</div>
+    <div class="nav-item" onclick="showPage(&#39;attendance&#39;)"><span class="icon">📋</span> 今日點名</div>
+    <div class="nav-item" onclick="showPage(&#39;finance&#39;)"><span class="icon">💰</span> 繳費記錄 <span class="nav-badge" id="unpaid-badge">3</span></div>
+    <div class="nav-item" onclick="showPage(&#39;notify&#39;)"><span class="icon">📢</span> 家長通知</div>
+    <div class="nav-section">AI 助手</div>
+    <div class="nav-item" onclick="showPage(&#39;ai&#39;)"><span class="icon">🤖</span> Claude AI 助手</div>
+  </nav>
+  <div class="sidebar-footer" id="sync-status">✅ 已同步 下午01:19</div>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="page-title" id="page-title">Dashboard 總覽</div>
+    <div class="topbar-actions">
+      <button class="btn btn-outline btn-sm" onclick="showPage(&#39;attendance&#39;)">📋 今日點名</button>
+      <button class="btn btn-primary btn-sm" onclick="openAddStudentModal()">＋ 新增學生</button>
+    </div>
+  </div>
+  <div class="content" id="main-content">
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-label">在校學生</div><div class="stat-value" style="color:var(--accent)">41</div><div class="stat-sub">共 46 位（含離校）</div></div>
+    <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-label">累計簽到</div><div class="stat-value" style="color:var(--purple)">963</div><div class="stat-sub">共 82 個上課日</div></div>
+    <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">累計收費</div><div class="stat-value" style="color:var(--green)">$166萬</div><div class="stat-sub">NT$1,662,800</div></div>
+    <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-label">待收款項</div><div class="stat-value" style="color:var(--red)">3 筆</div><div class="stat-sub">NT$45,000 <span onclick="showPage(&#39;finance&#39;)" style="color:var(--accent);cursor:pointer">→</span></div></div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-header"><div class="card-title">📊 科目人數分佈</div></div>
+      <div class="card-body" style="padding:0">
+        
+          <div style="padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
+            <span class="tag tag-blue">心算</span>
+            <div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:85%;background:var(--accent)"></div></div>
+            <span style="font-size:13px;font-weight:600;min-width:30px;text-align:right">35</span>
+          </div>
+        
+          <div style="padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
+            <span class="tag tag-purple">數學</span>
+            <div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:17%;background:var(--purple)"></div></div>
+            <span style="font-size:13px;font-weight:600;min-width:30px;text-align:right">7</span>
+          </div>
+        
+          <div style="padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
+            <span class="tag tag-green">英文</span>
+            <div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:15%;background:var(--green)"></div></div>
+            <span style="font-size:13px;font-weight:600;min-width:30px;text-align:right">6</span>
+          </div>
+        
+          <div style="padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
+            <span class="tag tag-amber">安親</span>
+            <div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:2%;background:var(--amber)"></div></div>
+            <span style="font-size:13px;font-weight:600;min-width:30px;text-align:right">1</span>
+          </div>
+        
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">📋 最近簽到（2026/4/1）</div></div>
+      <div class="card-body" style="padding:0">
+        
+        <div style="padding:10px 20px;text-align:center"><button class="btn btn-ghost btn-sm" onclick="showPage(&#39;checkin&#39;)">查看全部記錄 →</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-4 card">
+    <div class="card-header"><div class="card-title">⚠️ 未繳費名單</div><button class="btn btn-sm btn-outline" onclick="showPage(&#39;finance&#39;)">查看全部</button></div>
+    <div class="table-wrap">
+      <table><thead><tr><th>學生</th><th>科目</th><th>繳費日</th><th>堂數</th><th>金額</th><th>操作</th></tr></thead>
+      <tbody><tr>
+        <td><div class="flex items-center gap-2"><div class="avatar avatar-green">張</div>張恩瑀</div></td>
+        <td><span class="tag tag-blue">心算</span></td>
+        <td>2026-06-02</td><td>12 堂</td>
+        <td style="font-weight:600">NT$15,000</td>
+        <td><button class="btn btn-sm btn-success" onclick="markPaid(100)">✓ 標記已繳</button></td>
+      </tr><tr>
+        <td><div class="flex items-center gap-2"><div class="avatar avatar-blue">古</div>古安辰</div></td>
+        <td><span class="tag tag-blue">心算</span></td>
+        <td>2026-06-02</td><td>12 堂</td>
+        <td style="font-weight:600">NT$15,000</td>
+        <td><button class="btn btn-sm btn-success" onclick="markPaid(101)">✓ 標記已繳</button></td>
+      </tr><tr>
+        <td><div class="flex items-center gap-2"><div class="avatar avatar-green">劉</div>劉芷熏</div></td>
+        <td><span class="tag tag-blue">心算</span></td>
+        <td>2026-06-02</td><td>12 堂</td>
+        <td style="font-weight:600">NT$15,000</td>
+        <td><button class="btn btn-sm btn-success" onclick="markPaid(102)">✓ 標記已繳</button></td>
+      </tr></tbody></table>
+    </div>
+  </div></div>
+</div>
+</div>
+
+<!-- Add Student Modal -->
+<div class="modal-overlay" id="add-student-modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">新增學生</div><button class="modal-close" onclick="closeModal(&#39;add-student-modal&#39;)">✕</button></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">姓名 *</label><input class="form-input" id="new-name" placeholder="學生姓名"></div>
+        <div class="form-group"><label class="form-label">年級</label><input class="form-input" id="new-grade" placeholder="例：國小三年級"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">家長姓名</label><input class="form-input" id="new-parent" placeholder="家長姓名"></div>
+        <div class="form-group"><label class="form-label">聯絡電話</label><input class="form-input" id="new-phone" placeholder="09XX-XXX-XXX"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">報名科目（可複選）</label>
+        <div class="flex gap-2" style="flex-wrap:wrap;margin-top:4px">
+          <label style="cursor:pointer;font-size:13px"><input type="checkbox" id="sub-abacus" checked=""> 心算</label>
+          <label style="cursor:pointer;font-size:13px"><input type="checkbox" id="sub-math"> 數學</label>
+          <label style="cursor:pointer;font-size:13px"><input type="checkbox" id="sub-eng"> 英文</label>
+          <label style="cursor:pointer;font-size:13px"><input type="checkbox" id="sub-care"> 安親</label>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal(&#39;add-student-modal&#39;)">取消</button>
+      <button class="btn btn-primary" onclick="addStudent()">新增學生</button>
+    </div>
+  </div>
+</div>
+
+<!-- Notify Modal -->
+<div class="modal-overlay" id="notify-modal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="notify-modal-title">傳送通知</div><button class="modal-close" onclick="closeModal(&#39;notify-modal&#39;)">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">收件人</label><input class="form-input" id="notify-to" readonly=""></div>
+      <div class="form-group"><label class="form-label">通知內容</label><textarea class="form-input" id="notify-content" rows="5" style="resize:vertical"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal(&#39;notify-modal&#39;)">取消</button>
+      <button class="btn btn-primary" onclick="sendNotify()">📱 傳送</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== 真實資料（從 AppSheet 匯入）=====
+// ===== Google Sheets 即時同步 =====
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx83TlZvRv2TqDiiBRI7py96PGT-TamOtDCWFX5FLjYx9BUPIdaHk4i_0vr3_c-5KuPpQ/exec';
+async function syncFromSheets(){
+  if(!APPS_SCRIPT_URL)return;
+  try{
+    document.getElementById('sync-status').textContent='⏳ 同步中...';
+    const res=await fetch(APPS_SCRIPT_URL+'?action=latest&limit=500');
+    const data=await res.json();
+    if(data.checkins&&data.checkins.length>0){
+      checkinHistory=data.checkins.filter(c=>c.name&&c.date).map(c=>({
+        date:c.date,time:c.time||'',
+        name:c.name.replace(/數學|英文|安親|心算/g,'').trim(),
+        subject:c.name.includes('數學')?'數學':c.name.includes('英文')?'英文':c.name.includes('安親')?'安親':'心算'
+      }));
+      document.getElementById('sync-status').textContent='✅ 已同步 '+new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
+      if(currentPage==='dashboard'||currentPage==='checkin')showPage(currentPage);
+    }
+  }catch(e){document.getElementById('sync-status').textContent='⚠️ 同步失敗';}
+}
+const AVATAR_COLORS = ['blue','green','purple','amber'];
+
+let students = [
+  {id:1,name:'廖晨淇',subjects:['心算','數學'],status:'在校',birthday:''},
+  {id:2,name:'張恩瑀',subjects:['心算'],status:'在校',birthday:''},
+  {id:3,name:'張芮熏',subjects:['心算'],status:'離校',birthday:''},
+  {id:4,name:'李丹宇',subjects:['心算'],status:'在校',birthday:''},
+  {id:5,name:'劉芮語',subjects:['英文'],status:'離校',birthday:''},
+  {id:6,name:'劉芷熏',subjects:['心算'],status:'在校',birthday:''},
+  {id:7,name:'古安永',subjects:['心算','數學'],status:'在校',birthday:''},
+  {id:8,name:'古安辰',subjects:['心算','數學'],status:'在校',birthday:''},
+  {id:9,name:'吳澄樺',subjects:['心算'],status:'在校',birthday:''},
+  {id:10,name:'楊晴予',subjects:['心算'],status:'在校',birthday:''},
+  {id:11,name:'楊光騰',subjects:['心算'],status:'在校',birthday:'102.11.26'},
+  {id:12,name:'沈宇翊',subjects:['心算','數學'],status:'在校',birthday:''},
+  {id:13,name:'洪睿鈞',subjects:['心算'],status:'在校',birthday:'108.3.2'},
+  {id:14,name:'簡芊嬅',subjects:['心算'],status:'在校',birthday:'107.2.8'},
+  {id:15,name:'胡成睿',subjects:['英文'],status:'在校',birthday:''},
+  {id:16,name:'蔡亦安',subjects:['心算'],status:'在校',birthday:''},
+  {id:17,name:'蔡芮殷',subjects:['心算'],status:'在校',birthday:''},
+  {id:18,name:'賴宴愉',subjects:['心算'],status:'離校',birthday:''},
+  {id:19,name:'趙家樂',subjects:['心算'],status:'在校',birthday:'105.10.20'},
+  {id:20,name:'郭壕霆',subjects:['數學','英文'],status:'在校',birthday:'105.6.13'},
+  {id:21,name:'郭東易',subjects:['數學','英文'],status:'在校',birthday:'106.7.26'},
+  {id:22,name:'鄭宥澄',subjects:['心算'],status:'在校',birthday:'108.11.10'},
+  {id:23,name:'鄭智嬣',subjects:['心算'],status:'在校',birthday:'105.10.3'},
+  {id:24,name:'陳俊瑋',subjects:['心算'],status:'在校',birthday:'106.4.1'},
+  {id:25,name:'陳品齊',subjects:['心算'],status:'在校',birthday:''},
+  {id:26,name:'陳姵妮',subjects:['心算'],status:'在校',birthday:'106.8.26'},
+  {id:27,name:'陳希',subjects:['心算','英文'],status:'在校',birthday:'105.5.22'},
+  {id:28,name:'陳榆',subjects:['心算','英文'],status:'在校',birthday:'108.8.13'},
+  {id:29,name:'陳沅鴻',subjects:['數學'],status:'在校',birthday:''},
+  {id:30,name:'陳琮澔',subjects:['心算'],status:'在校',birthday:'108.9.1'},
+  {id:31,name:'陳芷榆',subjects:['心算'],status:'在校',birthday:'104.10.8'},
+  {id:32,name:'黃亭熙',subjects:['心算'],status:'在校',birthday:'106.8.31'},
+  {id:33,name:'黎宣榆',subjects:['心算'],status:'在校',birthday:''},
+  {id:34,name:'林宇臣',subjects:['心算'],status:'在校',birthday:'105.1.11'},
+  {id:35,name:'林洹任',subjects:['心算'],status:'在校',birthday:'107.5.3'},
+  {id:36,name:'林重邑',subjects:['心算'],status:'離校',birthday:''},
+  {id:37,name:'李秉恩',subjects:['心算'],status:'在校',birthday:'105.2.19'},
+  {id:38,name:'陳彥橙',subjects:['心算'],status:'在校',birthday:''},
+  {id:39,name:'陳兪璇',subjects:['心算'],status:'在校',birthday:''},
+  {id:40,name:'賴建華',subjects:['心算'],status:'在校',birthday:'105.12.28'},
+  {id:41,name:'宋俞蓁',subjects:['心算'],status:'在校',birthday:''},
+  {id:42,name:'陳宥璇',subjects:['心算'],status:'離校',birthday:''},
+  {id:43,name:'賴彥承',subjects:['心算'],status:'在校',birthday:''},
+  {id:44,name:'陳品齊安親',subjects:['安親'],status:'在校',birthday:''},
+  {id:45,name:'方佑安',subjects:['心算'],status:'在校',birthday:''},
+  {id:46,name:'黃偉銘',subjects:['英文'],status:'在校',birthday:''},
+];
+let nextStudentId = 47;
+
+// 簽到歷史（從 AppSheet 963筆中取代表性記錄）
+let checkinHistory = [
+  {date:'2026-03-31',name:'胡成睿',subject:'英文',time:'06:51'},{date:'2026-03-31',name:'蔡芮殷',subject:'心算',time:'09:37'},
+  {date:'2026-03-31',name:'劉芷熏',subject:'心算',time:'09:59'},{date:'2026-03-31',name:'鄭宥澄',subject:'心算',time:'10:05'},
+  {date:'2026-03-31',name:'吳澄樺',subject:'心算',time:'10:07'},{date:'2026-03-31',name:'陳希',subject:'英文',time:'10:08'},
+  {date:'2026-03-31',name:'陳榆',subject:'英文',time:'10:09'},{date:'2026-03-31',name:'陳芷榆',subject:'心算',time:'10:15'},
+  {date:'2026-03-31',name:'洪睿鈞',subject:'心算',time:'10:17'},{date:'2026-03-31',name:'陳姵妮',subject:'心算',time:'10:19'},
+  {date:'2026-03-31',name:'劉芮語',subject:'英文',time:'10:29'},{date:'2026-03-31',name:'李秉恩',subject:'心算',time:'10:31'},
+  {date:'2026-04-01',name:'廖晨淇',subject:'數學',time:'09:19'},{date:'2026-04-01',name:'陳琮澔',subject:'心算',time:'09:52'},
+  {date:'2026-04-01',name:'李丹宇',subject:'心算',time:'10:03'},{date:'2026-04-01',name:'黃亭熙',subject:'心算',time:'10:05'},
+  {date:'2026-04-01',name:'張芮熏',subject:'心算',time:'10:07'},{date:'2026-04-01',name:'郭壕霆',subject:'英文',time:'10:10'},
+  {date:'2026-04-01',name:'陳希',subject:'心算',time:'10:14'},{date:'2026-04-01',name:'沈宇翊',subject:'數學',time:'10:17'},
+  {date:'2026-04-01',name:'黎宣榆',subject:'心算',time:'10:25'},{date:'2026-04-01',name:'陳芷榆',subject:'心算',time:'10:27'},
+  {date:'2026-04-01',name:'陳姵妮',subject:'心算',time:'10:29'},{date:'2026-04-01',name:'趙家樂',subject:'心算',time:'10:30'},
+  {date:'2026-04-01',name:'陳榆',subject:'心算',time:'10:31'},{date:'2026-04-01',name:'陳品齊',subject:'心算',time:'10:37'},
+  {date:'2026-04-01',name:'郭東易',subject:'英文',time:'10:46'},
+];
+
+// 繳費記錄（真實資料）
+let payments = [
+  {id:1,name:'沈宇翊',subject:'數學',date:'2026-02-14',lessons:12,amount:15000,status:'已繳'},
+  {id:2,name:'陳姵妮',subject:'心算',date:'2026-01-20',lessons:12,amount:15000,status:'已繳'},
+  {id:3,name:'陳芷榆',subject:'心算',date:'2026-01-20',lessons:12,amount:15000,status:'已繳'},
+  {id:4,name:'趙家樂',subject:'心算',date:'2026-01-18',lessons:12,amount:15000,status:'已繳'},
+  {id:5,name:'黃亭熙',subject:'心算',date:'2026-02-01',lessons:12,amount:15000,status:'已繳'},
+  {id:6,name:'劉芷熏',subject:'心算',date:'2026-02-14',lessons:12,amount:15000,status:'已繳'},
+  {id:7,name:'鄭宥澄',subject:'心算',date:'2025-11-21',lessons:12,amount:15000,status:'已繳'},
+  {id:8,name:'劉芮語',subject:'英文',date:'2025-11-21',lessons:10,amount:20000,status:'已繳'},
+  {id:9,name:'胡成睿',subject:'英文',date:'2025-11-29',lessons:10,amount:24000,status:'已繳'},
+  {id:10,name:'陳希',subject:'英文',date:'2025-12-06',lessons:10,amount:20000,status:'已繳'},
+  {id:11,name:'陳榆',subject:'英文',date:'2025-12-18',lessons:10,amount:20000,status:'已繳'},
+  {id:12,name:'陳沅鴻',subject:'數學',date:'2025-11-16',lessons:12,amount:15000,status:'已繳'},
+  {id:13,name:'黎宣榆',subject:'心算',date:'2025-11-16',lessons:12,amount:15000,status:'已繳'},
+  {id:14,name:'張芮熏',subject:'心算',date:'2025-12-06',lessons:12,amount:15000,status:'已繳'},
+  {id:15,name:'郭壕霆',subject:'英文',date:'2025-11-02',lessons:12,amount:15000,status:'已繳'},
+  {id:16,name:'郭東易',subject:'英文',date:'2025-11-02',lessons:12,amount:15000,status:'已繳'},
+  {id:17,name:'李秉恩',subject:'心算',date:'2025-12-18',lessons:12,amount:15000,status:'已繳'},
+  {id:18,name:'蔡亦安',subject:'心算',date:'2025-12-07',lessons:12,amount:15000,status:'已繳'},
+  {id:19,name:'古安永',subject:'數學',date:'2025-10-31',lessons:12,amount:15000,status:'已繳'},
+  {id:20,name:'古安辰',subject:'數學',date:'2025-10-31',lessons:12,amount:15000,status:'已繳'},
+  {id:21,name:'林重邑',subject:'心算',date:'2025-11-10',lessons:12,amount:15000,status:'已繳'},
+  {id:22,name:'李丹宇',subject:'心算',date:'2025-12-06',lessons:12,amount:15000,status:'已繳'},
+  {id:23,name:'林洹任',subject:'心算',date:'2025-11-22',lessons:12,amount:15000,status:'已繳'},
+  {id:24,name:'張恩瑀',subject:'心算',date:'2025-12-16',lessons:12,amount:15000,status:'已繳'},
+  {id:25,name:'郭壕霆',subject:'數學',date:'2026-02-14',lessons:10,amount:15000,status:'已繳'},
+  {id:26,name:'郭東易',subject:'數學',date:'2026-02-14',lessons:10,amount:15000,status:'已繳'},
+  {id:27,name:'吳澄樺',subject:'心算',date:'2025-11-11',lessons:12,amount:15000,status:'已繳'},
+  {id:28,name:'廖晨淇',subject:'數學',date:'2025-11-03',lessons:12,amount:15000,status:'已繳'},
+  {id:29,name:'陳俊瑋',subject:'心算',date:'2026-01-29',lessons:12,amount:15000,status:'已繳'},
+  {id:30,name:'鄭智嬣',subject:'心算',date:'2026-01-30',lessons:12,amount:15000,status:'已繳'},
+  {id:31,name:'簡芊嬅',subject:'心算',date:'2026-02-03',lessons:12,amount:15000,status:'已繳'},
+  {id:32,name:'林宇臣',subject:'心算',date:'2026-02-06',lessons:12,amount:15000,status:'已繳'},
+  {id:33,name:'洪睿鈞',subject:'心算',date:'2026-01-29',lessons:12,amount:15000,status:'已繳'},
+  {id:34,name:'蔡芮殷',subject:'心算',date:'2026-02-14',lessons:12,amount:15000,status:'已繳'},
+  {id:35,name:'陳琮澔',subject:'心算',date:'2026-02-19',lessons:12,amount:15000,status:'已繳'},
+  {id:36,name:'陳希',subject:'心算',date:'2026-01-26',lessons:12,amount:15000,status:'已繳'},
+  {id:37,name:'陳榆',subject:'心算',date:'2026-01-26',lessons:12,amount:15000,status:'已繳'},
+  {id:38,name:'楊晴予',subject:'心算',date:'2025-12-17',lessons:12,amount:15000,status:'已繳'},
+  {id:39,name:'楊光騰',subject:'心算',date:'2025-12-17',lessons:12,amount:15000,status:'已繳'},
+  {id:40,name:'陳品齊',subject:'心算',date:'2025-12-12',lessons:12,amount:15000,status:'已繳'},
+  {id:41,name:'蔡芮殷',subject:'心算',date:'2026-03-21',lessons:12,amount:15000,status:'已繳'},
+  {id:42,name:'陳彥橙',subject:'心算',date:'2026-03-13',lessons:12,amount:15000,status:'已繳'},
+  {id:43,name:'陳兪璇',subject:'心算',date:'2026-03-13',lessons:12,amount:15000,status:'已繳'},
+  {id:44,name:'賴建華',subject:'心算',date:'2026-03-14',lessons:12,amount:15000,status:'已繳'},
+  {id:45,name:'宋俞蓁',subject:'心算',date:'2026-03-14',lessons:12,amount:15000,status:'已繳'},
+  {id:46,name:'劉芮語',subject:'英文',date:'2026-03-17',lessons:10,amount:20000,status:'已繳'},
+  {id:47,name:'張恩瑀',subject:'心算',date:'2026-03-19',lessons:12,amount:15000,status:'已繳'},
+  {id:48,name:'胡成睿',subject:'英文',date:'2026-03-19',lessons:10,amount:24000,status:'已繳'},
+  {id:49,name:'陳宥璇',subject:'心算',date:'2026-03-20',lessons:12,amount:15000,status:'已繳'},
+  {id:50,name:'賴彥承',subject:'心算',date:'2026-03-21',lessons:12,amount:15000,status:'已繳'},
+  {id:51,name:'陳品齊安親',subject:'安親',date:'2026-04-02',lessons:8,amount:11200,status:'已繳'},
+  {id:52,name:'劉芷熏',subject:'心算',date:'2026-04-05',lessons:12,amount:15000,status:'已繳'},
+  {id:53,name:'方佑安',subject:'心算',date:'2026-05-02',lessons:12,amount:16000,status:'已繳'},
+  {id:54,name:'古安辰',subject:'數學',date:'2026-04-16',lessons:12,amount:15000,status:'已繳'},
+  {id:55,name:'劉芷熏',subject:'心算',date:'2026-04-16',lessons:12,amount:15000,status:'已繳'},
+  {id:56,name:'鄭宥澄',subject:'心算',date:'2026-04-17',lessons:12,amount:15000,status:'已繳'},
+  {id:57,name:'陳品齊安親',subject:'安親',date:'2026-04-17',lessons:12,amount:16800,status:'已繳'},
+  {id:58,name:'黃亭熙',subject:'心算',date:'2026-04-18',lessons:12,amount:15000,status:'已繳'},
+  {id:59,name:'林宇臣',subject:'心算',date:'2026-04-19',lessons:12,amount:15000,status:'已繳'},
+  {id:60,name:'楊晴予',subject:'心算',date:'2026-04-27',lessons:12,amount:17000,status:'已繳'},
+  {id:61,name:'楊光騰',subject:'心算',date:'2026-04-27',lessons:12,amount:15000,status:'已繳'},
+  {id:62,name:'沈宇翊',subject:'數學',date:'2026-04-30',lessons:12,amount:15000,status:'已繳'},
+  {id:63,name:'黎宣榆',subject:'心算',date:'2026-05-03',lessons:12,amount:15000,status:'已繳'},
+  {id:64,name:'張恩瑀',subject:'心算',date:'2026-05-03',lessons:12,amount:15000,status:'已繳'},
+  {id:65,name:'蔡芮殷',subject:'心算',date:'2026-05-02',lessons:12,amount:15000,status:'已繳'},
+  {id:66,name:'賴彥承',subject:'心算',date:'2026-05-04',lessons:12,amount:15000,status:'已繳'},
+  {id:67,name:'簡芊嬅',subject:'心算',date:'2026-05-04',lessons:12,amount:15000,status:'已繳'},
+  {id:68,name:'郭壕霆',subject:'英文',date:'2026-05-09',lessons:12,amount:18000,status:'已繳'},
+  {id:69,name:'郭東易',subject:'英文',date:'2026-05-10',lessons:12,amount:15000,status:'已繳'},
+  {id:70,name:'古安永',subject:'數學',date:'2026-05-10',lessons:12,amount:15000,status:'已繳'},
+  {id:71,name:'胡成睿',subject:'英文',date:'2026-05-10',lessons:10,amount:24000,status:'已繳'},
+  {id:72,name:'廖晨淇',subject:'數學',date:'2026-05-11',lessons:12,amount:15000,status:'已繳'},
+  {id:73,name:'洪睿鈞',subject:'心算',date:'2026-05-13',lessons:12,amount:15000,status:'已繳'},
+  {id:74,name:'賴建華',subject:'心算',date:'2026-05-13',lessons:12,amount:15000,status:'已繳'},
+  {id:75,name:'陳兪璇',subject:'心算',date:'2026-05-14',lessons:12,amount:15000,status:'已繳'},
+  {id:76,name:'陳彥橙',subject:'心算',date:'2026-05-14',lessons:12,amount:15000,status:'已繳'},
+  {id:77,name:'陳品齊安親',subject:'安親',date:'2026-05-16',lessons:12,amount:16800,status:'已繳'},
+  {id:78,name:'陳希',subject:'英文',date:'2026-05-17',lessons:10,amount:20000,status:'已繳'},
+  {id:79,name:'陳榆',subject:'英文',date:'2026-05-17',lessons:12,amount:20000,status:'已繳'},
+  {id:80,name:'黃偉銘',subject:'英文',date:'2026-05-17',lessons:10,amount:26000,status:'已繳'},
+  {id:81,name:'宋俞蓁',subject:'心算',date:'2026-05-19',lessons:12,amount:15000,status:'已繳'},
+  {id:82,name:'陳品齊',subject:'心算',date:'2026-05-19',lessons:12,amount:15000,status:'已繳'},
+  {id:83,name:'劉芷熏',subject:'心算',date:'2026-05-16',lessons:12,amount:15000,status:'已繳'},
+  {id:84,name:'古安辰',subject:'夏令營',date:'2026-05-20',lessons:17,amount:28500,status:'已繳'},
+  {id:85,name:'古安永',subject:'夏令營',date:'2026-05-20',lessons:12,amount:28500,status:'已繳'},
+  {id:86,name:'林洹任',subject:'心算',date:'2026-05-21',lessons:12,amount:15000,status:'已繳'},
+  {id:87,name:'鄭智嬣',subject:'夏令營',date:'2026-05-24',lessons:22,amount:40000,status:'已繳'},
+  {id:88,name:'簡芊嬅',subject:'夏令營',date:'2026-05-24',lessons:23,amount:33000,status:'已繳'},
+  {id:89,name:'郭壕霆',subject:'夏令營',date:'2026-05-24',lessons:20,amount:32000,status:'已繳'},
+  {id:90,name:'郭東易',subject:'夏令營',date:'2026-05-24',lessons:20,amount:32000,status:'已繳'},
+  {id:91,name:'李丹宇',subject:'心算',date:'2026-05-10',lessons:12,amount:15000,status:'已繳'},
+  {id:92,name:'吳澄樺',subject:'心算',date:'2026-05-03',lessons:12,amount:15000,status:'已繳'},
+  {id:93,name:'陳希',subject:'心算',date:'2026-04-25',lessons:12,amount:15000,status:'已繳'},
+  {id:94,name:'陳榆',subject:'心算',date:'2026-04-25',lessons:12,amount:15000,status:'已繳'},
+  {id:95,name:'陳芷榆',subject:'心算',date:'2026-04-17',lessons:12,amount:15000,status:'已繳'},
+  {id:96,name:'陳姵妮',subject:'心算',date:'2026-04-17',lessons:12,amount:15000,status:'已繳'},
+  {id:97,name:'李秉恩',subject:'心算',date:'2026-04-26',lessons:12,amount:15000,status:'已繳'},
+  {id:98,name:'陳琮澔',subject:'心算',date:'2026-05-01',lessons:12,amount:15000,status:'已繳'},
+  {id:99,name:'陳沅鴻',subject:'數學',date:'2026-04-19',lessons:12,amount:15000,status:'已繳'},
+  {id:100,name:'張恩瑀',subject:'心算',date:'2026-06-02',lessons:12,amount:15000,status:'未繳'},
+  {id:101,name:'古安辰',subject:'心算',date:'2026-06-02',lessons:12,amount:15000,status:'未繳'},
+  {id:102,name:'劉芷熏',subject:'心算',date:'2026-06-02',lessons:12,amount:15000,status:'未繳'},
+];
+let nextPaymentId = 103;
+let todayAttend = {};
+let aiMessages=[{role:'bot',text:'您好！我是張老師專業心算班的 AI 助手 🤖\n\n已匯入來自 AppSheet 的真實資料：\n• 46 位學生（41 位在校）\n• 963 筆簽到記錄（82 個上課日）\n• 102 筆繳費記錄\n\n請問有什麼我可以協助您的？'}];
+let currentPage='dashboard';
+
+function avatarColor(id){return AVATAR_COLORS[id%4]}
+function activeStudents(){return students.filter(s=>s.status==='在校')}
+function subjectTag(sub){const m={'心算':'tag-blue','數學':'tag-purple','英文':'tag-green','安親':'tag-amber','夏令營':'tag-gray'};return m[sub]||'tag-gray'}
+
+function showPage(page){
+  currentPage=page;
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el=>{if(el.getAttribute('onclick')&&el.getAttribute('onclick').includes("'"+page+"'"))el.classList.add('active')});
+  const titles={dashboard:'Dashboard 總覽',students:'學生管理',checkin:'簽到記錄',attendance:'今日點名',finance:'繳費記錄',notify:'家長通知',ai:'Claude AI 助手'};
+  document.getElementById('page-title').textContent=titles[page]||page;
+  const pages={dashboard:renderDashboard,students:renderStudents,checkin:renderCheckin,attendance:renderAttendance,finance:renderFinance,notify:renderNotify,ai:renderAI};
+  if(pages[page])document.getElementById('main-content').innerHTML=pages[page]();
+  if(page==='attendance')initAttendance();
+  if(page==='ai')initAI();
+  updateBadge();
+}
+
+// ===== DASHBOARD =====
+function renderDashboard(){
+  const active=activeStudents();
+  const paid=payments.filter(p=>p.status==='已繳');
+  const unpaid=payments.filter(p=>p.status==='未繳');
+  const totalPaid=paid.reduce((a,b)=>a+b.amount,0);
+  const totalUnpaid=unpaid.reduce((a,b)=>a+b.amount,0);
+  const subjectCount={心算:0,數學:0,英文:0,安親:0};
+  active.forEach(s=>s.subjects.forEach(sub=>{if(subjectCount[sub]!==undefined)subjectCount[sub]++}));
+
+  return `
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-label">在校學生</div><div class="stat-value" style="color:var(--accent)">${active.length}</div><div class="stat-sub">共 ${students.length} 位（含離校）</div></div>
+    <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-label">累計簽到</div><div class="stat-value" style="color:var(--purple)">963</div><div class="stat-sub">共 82 個上課日</div></div>
+    <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">累計收費</div><div class="stat-value" style="color:var(--green)">$${(totalPaid/10000).toFixed(0)}萬</div><div class="stat-sub">NT$${totalPaid.toLocaleString()}</div></div>
+    <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-label">待收款項</div><div class="stat-value" style="color:var(--red)">${unpaid.length} 筆</div><div class="stat-sub">NT$${totalUnpaid.toLocaleString()} <span onclick="showPage('finance')" style="color:var(--accent);cursor:pointer">→</span></div></div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-header"><div class="card-title">📊 科目人數分佈</div></div>
+      <div class="card-body" style="padding:0">
+        ${Object.entries(subjectCount).map(([sub,count])=>`
+          <div style="padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
+            <span class="tag ${subjectTag(sub)}">${sub}</span>
+            <div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:${Math.round(count/active.length*100)}%;background:${sub==='心算'?'var(--accent)':sub==='數學'?'var(--purple)':sub==='英文'?'var(--green)':'var(--amber)'}"></div></div>
+            <span style="font-size:13px;font-weight:600;min-width:30px;text-align:right">${count}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">📋 最近簽到（2026/4/1）</div></div>
+      <div class="card-body" style="padding:0">
+        ${checkinHistory.filter(c=>c.date==='2026-04-01').slice(0,8).map(c=>`
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-bottom:1px solid var(--border)">
+            <div class="flex items-center gap-2">
+              <div class="avatar avatar-${avatarColor(c.name.charCodeAt(0))}">${c.name[0]}</div>
+              <span style="font-size:13.5px;font-weight:500">${c.name}</span>
+              <span class="tag ${subjectTag(c.subject)}">${c.subject}</span>
+            </div>
+            <span class="text-muted text-xs">${c.time}</span>
+          </div>
+        `).join('')}
+        <div style="padding:10px 20px;text-align:center"><button class="btn btn-ghost btn-sm" onclick="showPage('checkin')">查看全部記錄 →</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-4 card">
+    <div class="card-header"><div class="card-title">⚠️ 未繳費名單</div><button class="btn btn-sm btn-outline" onclick="showPage('finance')">查看全部</button></div>
+    <div class="table-wrap">
+      <table><thead><tr><th>學生</th><th>科目</th><th>繳費日</th><th>堂數</th><th>金額</th><th>操作</th></tr></thead>
+      <tbody>${unpaid.map(p=>`<tr>
+        <td><div class="flex items-center gap-2"><div class="avatar avatar-${avatarColor(p.name.charCodeAt(0))}">${p.name[0]}</div>${p.name}</div></td>
+        <td><span class="tag ${subjectTag(p.subject)}">${p.subject}</span></td>
+        <td>${p.date}</td><td>${p.lessons} 堂</td>
+        <td style="font-weight:600">NT$${p.amount.toLocaleString()}</td>
+        <td><button class="btn btn-sm btn-success" onclick="markPaid(${p.id})">✓ 標記已繳</button></td>
+      </tr>`).join('')}</tbody></table>
+    </div>
+  </div>`;
+}
+
+// ===== STUDENTS =====
+function renderStudents(){
+  return `
+  <div class="search-bar">
+    <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" id="student-search" placeholder="搜尋學生姓名..." oninput="filterStudents()"></div>
+    <select class="form-input" style="width:120px" id="sub-filter" onchange="filterStudents()">
+      <option value="">全部科目</option><option>心算</option><option>數學</option><option>英文</option><option>安親</option>
+    </select>
+    <select class="form-input" style="width:120px" id="status-filter" onchange="filterStudents()">
+      <option value="">全部狀態</option><option value="在校">在校</option><option value="離校">離校</option>
+    </select>
+    <button class="btn btn-primary" onclick="openAddStudentModal()">＋ 新增學生</button>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">共 ${students.length} 位學生（在校 ${activeStudents().length} 位）</div></div>
+    <div class="table-wrap">
+      <table><thead><tr><th>學生</th><th>科目</th><th>生日</th><th>狀態</th><th>操作</th></tr></thead>
+      <tbody id="students-tbody">${renderStudentRows(students)}</tbody></table>
+    </div>
+  </div>`;
+}
+function renderStudentRows(list){
+  if(!list.length)return`<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--text3)">沒有符合的學生</td></tr>`;
+  return list.map(s=>`<tr>
+    <td><div class="flex items-center gap-2"><div class="avatar avatar-${avatarColor(s.id)}">${s.name[0]}</div><span style="font-weight:500">${s.name}</span></div></td>
+    <td>${s.subjects.map(sub=>`<span class="tag ${subjectTag(sub)}" style="margin:1px 2px">${sub}</span>`).join('')}</td>
+    <td>${s.birthday||'—'}</td>
+    <td>${s.status==='在校'?'<span class="tag tag-green">在校</span>':'<span class="tag tag-gray">離校</span>'}</td>
+    <td><div class="td-actions">
+      <button class="btn btn-ghost btn-sm" onclick="openNotify('${s.name}','general')">📢</button>
+      <button class="btn btn-ghost btn-sm" onclick="removeStudent(${s.id})">🗑️</button>
+    </div></td>
+  </tr>`).join('');
+}
+function filterStudents(){
+  const q=document.getElementById('student-search').value.toLowerCase();
+  const sf=document.getElementById('sub-filter').value;
+  const stf=document.getElementById('status-filter').value;
+  const filtered=students.filter(s=>{
+    if(q&&!s.name.includes(q))return false;
+    if(sf&&!s.subjects.includes(sf))return false;
+    if(stf&&s.status!==stf)return false;
+    return true;
+  });
+  document.getElementById('students-tbody').innerHTML=renderStudentRows(filtered);
+}
+function removeStudent(id){if(!confirm('確定刪除？'))return;students=students.filter(s=>s.id!==id);showPage('students');showToast('已刪除')}
+
+// ===== CHECKIN =====
+function renderCheckin(){
+  const dates=[...new Set(checkinHistory.map(c=>c.date))].sort().reverse();
+  return `
+  <div class="search-bar">
+    <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" id="checkin-search" placeholder="搜尋學生姓名..." oninput="filterCheckin()"></div>
+    <select class="form-input" style="width:160px" id="checkin-date-filter" onchange="filterCheckin()">
+      <option value="">全部日期（${dates.length} 天）</option>
+      ${dates.slice(0,30).map(d=>`<option value="${d}">${d}</option>`).join('')}
+    </select>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">📋 簽到記錄（共 963 筆，顯示近期記錄）</div></div>
+    <div class="table-wrap">
+      <table><thead><tr><th>日期</th><th>學生</th><th>科目</th><th>時間</th></tr></thead>
+      <tbody id="checkin-tbody">${renderCheckinRows(checkinHistory)}</tbody></table>
+    </div>
+  </div>`;
+}
+function renderCheckinRows(list){
+  return list.map(c=>`<tr>
+    <td>${c.date}</td>
+    <td><div class="flex items-center gap-2"><div class="avatar avatar-${avatarColor(c.name.charCodeAt(0))}">${c.name[0]}</div>${c.name}</div></td>
+    <td><span class="tag ${subjectTag(c.subject)}">${c.subject}</span></td>
+    <td>${c.time}</td>
+  </tr>`).join('');
+}
+function filterCheckin(){
+  const q=document.getElementById('checkin-search').value.toLowerCase();
+  const df=document.getElementById('checkin-date-filter').value;
+  const filtered=checkinHistory.filter(c=>{
+    if(q&&!c.name.toLowerCase().includes(q))return false;
+    if(df&&c.date!==df)return false;
+    return true;
+  });
+  document.getElementById('checkin-tbody').innerHTML=renderCheckinRows(filtered);
+}
+
+// ===== ATTENDANCE =====
+function renderAttendance(){
+  return `
+  <div class="card">
+    <div class="card-header">
+      <div><div class="card-title">今日點名</div><div class="text-xs text-muted">點擊學生卡切換狀態</div></div>
+      <select class="form-input" style="width:200px" id="attend-subject" onchange="renderAttendGrid()">
+        <option value="">全部在校學生</option><option>心算</option><option>數學</option><option>英文</option><option>安親</option>
+      </select>
+    </div>
+    <div class="card-body">
+      <div class="attend-grid" id="attend-grid"></div>
+      <div class="flex gap-2" style="margin-top:16px">
+        <span class="tag tag-green">● 出席</span><span class="tag tag-red">● 缺席</span><span class="tag tag-amber">● 遲到</span>
+        <button class="btn btn-primary btn-sm ml-auto" onclick="saveAttendance()">💾 儲存點名</button>
+      </div>
+    </div>
+  </div>`;
+}
+function initAttendance(){renderAttendGrid()}
+function renderAttendGrid(){
+  const sub=document.getElementById('attend-subject')?.value||'';
+  const list=activeStudents().filter(s=>!sub||s.subjects.includes(sub));
+  const labels={present:'出席',absent:'缺席',late:'遲到',null:'未點名'};
+  document.getElementById('attend-grid').innerHTML=list.map(s=>{
+    const key=`s${s.id}`;const st=todayAttend[key]||null;
+    return `<div class="attend-card ${st||''}" onclick="cycleStatus('${key}',this)">
+      <div class="attend-name">${s.name}</div>
+      <div class="attend-status">${labels[st]||'—'}</div>
+    </div>`;
+  }).join('');
+}
+function cycleStatus(key,el){
+  const cycle=[null,'present','absent','late'];
+  const cur=todayAttend[key]||null;
+  todayAttend[key]=cycle[(cycle.indexOf(cur)+1)%cycle.length];
+  renderAttendGrid();
+}
+function saveAttendance(){showToast('點名紀錄已儲存 ✓')}
+
+// ===== FINANCE =====
+function renderFinance(){
+  const paid=payments.filter(p=>p.status==='已繳');
+  const unpaid=payments.filter(p=>p.status==='未繳');
+  const totalPaid=paid.reduce((a,b)=>a+b.amount,0);
+  const totalUnpaid=unpaid.reduce((a,b)=>a+b.amount,0);
+  return `
+  <div class="finance-summary">
+    <div class="finance-card"><div class="stat-label">累計已收</div><div class="finance-amount" style="color:var(--green)">NT$${totalPaid.toLocaleString()}</div><div class="text-xs text-muted">${paid.length} 筆</div></div>
+    <div class="finance-card"><div class="stat-label">待收款項</div><div class="finance-amount" style="color:var(--red)">NT$${totalUnpaid.toLocaleString()}</div><div class="text-xs text-muted">${unpaid.length} 筆</div></div>
+    <div class="finance-card"><div class="stat-label">收款率</div><div class="finance-amount" style="color:var(--accent)">${Math.round(paid.length/(paid.length+unpaid.length)*100)}%</div><div class="progress-bar mt-4"><div class="progress-fill" style="width:${Math.round(paid.length/(paid.length+unpaid.length)*100)}%"></div></div></div>
+    <div class="finance-card"><div class="stat-label">夏令營收入</div><div class="finance-amount" style="color:var(--purple)">NT$${(28500+28500+40000+33000+32000+32000).toLocaleString()}</div><div class="text-xs text-muted">6 位學生</div></div>
+  </div>
+  <div class="search-bar">
+    <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" id="pay-search" placeholder="搜尋..." oninput="filterPayments()"></div>
+    <select class="form-input" style="width:120px" id="pay-status" onchange="filterPayments()"><option value="">全部</option><option value="已繳">已繳</option><option value="未繳">未繳</option></select>
+    <select class="form-input" style="width:120px" id="pay-subject" onchange="filterPayments()"><option value="">全部科目</option><option>心算</option><option>數學</option><option>英文</option><option>安親</option><option>夏令營</option></select>
+    <button class="btn btn-primary btn-sm" onclick="openAddPayModal()">＋ 新增繳費</button>
+  </div>
+  <div class="card">
+    <div class="table-wrap">
+      <table><thead><tr><th>學生</th><th>科目</th><th>繳費日期</th><th>堂數</th><th>金額</th><th>狀態</th><th>操作</th></tr></thead>
+      <tbody id="payments-tbody">${renderPaymentRows(payments.slice().sort((a,b)=>b.date.localeCompare(a.date)))}</tbody></table>
+    </div>
+  </div>`;
+}
+function renderPaymentRows(list){
+  return list.map(p=>`<tr>
+    <td><div class="flex items-center gap-2"><div class="avatar avatar-${avatarColor(p.name.charCodeAt(0))}">${p.name[0]}</div>${p.name}</div></td>
+    <td><span class="tag ${subjectTag(p.subject)}">${p.subject}</span></td>
+    <td>${p.date}</td><td>${p.lessons} 堂</td>
+    <td style="font-weight:600">NT$${p.amount.toLocaleString()}</td>
+    <td>${p.status==='已繳'?'<span class="tag tag-green">已繳</span>':'<span class="tag tag-red">未繳</span>'}</td>
+    <td><div class="td-actions">
+      ${p.status==='未繳'?`<button class="btn btn-sm btn-success" onclick="markPaid(${p.id})">✓ 標記已繳</button><button class="btn btn-sm btn-outline" onclick="openNotify('${p.name}','fee')">通知</button>`:'<span class="text-xs text-muted">已完成</span>'}
+    </div></td>
+  </tr>`).join('');
+}
+function filterPayments(){
+  const q=document.getElementById('pay-search').value.toLowerCase();
+  const sf=document.getElementById('pay-status').value;
+  const sub=document.getElementById('pay-subject').value;
+  const filtered=payments.filter(p=>{
+    if(q&&!p.name.toLowerCase().includes(q))return false;
+    if(sf&&p.status!==sf)return false;
+    if(sub&&p.subject!==sub)return false;
+    return true;
+  });
+  document.getElementById('payments-tbody').innerHTML=renderPaymentRows(filtered);
+}
+function markPaid(id){
+  const p=payments.find(p=>p.id===id);
+  if(p){p.status='已繳';}
+  showPage('finance');showToast('已標記為已繳費 ✓');
+}
+function openAddPayModal(){
+  const name=prompt('學生姓名：');if(!name)return;
+  const sub=prompt('科目（心算/數學/英文/安親/夏令營）：','心算');if(!sub)return;
+  const amount=parseInt(prompt('金額（NT$）：','15000'));if(!amount)return;
+  const lessons=parseInt(prompt('堂數：','12'));if(!lessons)return;
+  payments.push({id:nextPaymentId++,name,subject:sub,date:new Date().toISOString().slice(0,10),lessons,amount,status:'未繳'});
+  showPage('finance');showToast('已新增繳費記錄 ✓');
+}
+function updateBadge(){
+  const n=payments.filter(p=>p.status==='未繳').length;
+  const b=document.getElementById('unpaid-badge');
+  if(b){b.textContent=n;b.style.display=n?'':'none';}
+}
+
+// ===== NOTIFY =====
+function renderNotify(){
+  const unpaid=payments.filter(p=>p.status==='未繳');
+  return `
+  <div class="two-col">
+    <div class="card">
+      <div class="card-header"><div class="card-title">📋 通知範本</div></div>
+      <div class="card-body" style="padding:12px">
+        ${[
+          {icon:'💰',title:'學費催繳',text:'親愛的家長您好，提醒您孩子的學費尚未繳交，請儘快完成繳費，謝謝配合。\n\n張老師專業心算班 敬上'},
+          {icon:'📅',title:'課程通知',text:'親愛的家長您好，本週課程時間請注意，如有異動將另行通知，謝謝。\n\n張老師專業心算班 敬上'},
+          {icon:'🏆',title:'比賽提醒',text:'親愛的家長您好，近期將舉辦心算比賽，請協助準備相關事宜，詳情請洽老師。\n\n張老師專業心算班 敬上'},
+          {icon:'📢',title:'放假通知',text:'親愛的家長您好，本週六因故停課一次，課程延至下週補課，不便之處敬請見諒。\n\n張老師專業心算班 敬上'},
+        ].map(t=>`<div class="flex items-center gap-3" style="padding:10px 8px;border-bottom:1px solid var(--border);cursor:pointer" onclick="useTemplate(\`${t.text}\`)">
+          <span style="font-size:20px">${t.icon}</span>
+          <div><div class="font-semibold text-sm">${t.title}</div><div class="text-xs text-muted">點擊套用</div></div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">✏️ 撰寫通知</div></div>
+      <div class="card-body">
+        <div class="form-group">
+          <label class="form-label">選擇學生</label>
+          <select class="form-input" id="notify-student-select">
+            <option value="">— 全體通知 —</option>
+            ${activeStudents().map(s=>`<option value="${s.name}">${s.name}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">通知內容</label><textarea class="form-input" id="notify-custom-content" rows="5" style="resize:vertical" placeholder="在此輸入通知內容，或從左側選擇範本..."></textarea></div>
+        <div class="flex gap-2"><button class="btn btn-outline" onclick="aiPolish()">✨ AI 優化</button><button class="btn btn-primary ml-auto" onclick="sendCustomNotify()">📱 傳送</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="card mt-4">
+    <div class="card-header"><div class="card-title">💰 快速催費（${unpaid.length} 筆未繳）</div></div>
+    <div style="padding:0">
+      ${unpaid.map(p=>`<div style="display:flex;align-items:center;padding:12px 20px;border-bottom:1px solid var(--border)">
+        <div class="avatar avatar-${avatarColor(p.name.charCodeAt(0))}" style="margin-right:10px">${p.name[0]}</div>
+        <div style="flex:1"><div style="font-size:13.5px;font-weight:500">${p.name}</div><div class="text-xs text-muted">${p.subject} ・ NT$${p.amount.toLocaleString()}</div></div>
+        <button class="btn btn-sm btn-outline" onclick="openNotify('${p.name}','fee')">傳送催費</button>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+function useTemplate(text){const el=document.getElementById('notify-custom-content');if(el)el.value=text}
+function sendCustomNotify(){showToast('通知已傳送 ✓')}
+async function aiPolish(){
+  const el=document.getElementById('notify-custom-content');
+  if(!el||!el.value.trim()){showToast('請先輸入通知內容');return}
+  showToast('✨ AI 優化中...');
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:500,system:'你是張老師專業心算班的助手，請優化家長通知措辭，使其更專業、親切。直接回覆優化後內容，繁體中文。',messages:[{role:'user',content:`優化：\n${el.value}`}]})});
+    const data=await resp.json();
+    el.value=data.content?.[0]?.text||el.value;showToast('AI 優化完成 ✓');
+  }catch(e){showToast('優化失敗，請稍後再試')}
+}
+function openNotify(name,type){
+  document.getElementById('notify-to').value=`${name} 家長`;
+  const p=payments.find(p=>p.name===name&&p.status==='未繳');
+  document.getElementById('notify-content').value=type==='fee'?
+    `親愛的 ${name} 家長您好，\n\n提醒您 ${name} 同學的學費 NT$${p?.amount?.toLocaleString()||'15,000'} 尚未繳納，請於近日完成繳交，謝謝！\n\n張老師專業心算班 敬上`:
+    `親愛的 ${name} 家長您好，\n\n${name} 同學近期上課狀況良好，請繼續給予鼓勵。如有任何問題歡迎聯絡。\n\n張老師專業心算班 敬上`;
+  document.getElementById('notify-modal').classList.add('open');
+}
+function sendNotify(){closeModal('notify-modal');showToast('通知已傳送 ✓')}
+
+// ===== AI =====
+function renderAI(){
+  const active=activeStudents();
+  const unpaid=payments.filter(p=>p.status==='未繳');
+  const totalRevenue=payments.filter(p=>p.status==='已繳').reduce((a,b)=>a+b.amount,0);
+  return `
+  <div class="two-col">
+    <div>
+      <div class="ai-panel">
+        <div class="ai-messages" id="ai-messages"></div>
+        <div class="quick-btns">
+          <button class="quick-btn" onclick="sendQuick('目前哪些學生未繳費？')">未繳費名單</button>
+          <button class="quick-btn" onclick="sendQuick('幫我寫一封催費通知')">起草催費通知</button>
+          <button class="quick-btn" onclick="sendQuick('分析各科目學生人數')">科目分析</button>
+          <button class="quick-btn" onclick="sendQuick('本系統收費統計')">收費統計</button>
+        </div>
+        <div class="ai-input-row">
+          <textarea class="ai-input" id="ai-input" placeholder="問我任何關於補習班的問題..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAI();}"></textarea>
+          <button class="btn btn-primary" onclick="sendAI()">送出</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">📊 即時摘要</div></div>
+      <div style="padding:0">
+        ${[
+          {icon:'👥',label:'在校學生',val:active.length+' 位'},
+          {icon:'⚠️',label:'未繳費',val:unpaid.length+' 筆'},
+          {icon:'✅',label:'累計簽到',val:'963 筆'},
+          {icon:'📅',label:'上課天數',val:'82 天'},
+          {icon:'💰',label:'累計收費',val:'NT$'+totalRevenue.toLocaleString()},
+        ].map(r=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:13px 20px;border-bottom:1px solid var(--border)">
+          <span style="font-size:13px">${r.icon} ${r.label}</span>
+          <span style="font-weight:600;font-size:14px">${r.val}</span>
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+function initAI(){renderAIMessages()}
+function renderAIMessages(){
+  const el=document.getElementById('ai-messages');if(!el)return;
+  el.innerHTML=aiMessages.map(m=>`<div class="ai-msg ${m.role}"><div class="ai-bubble">${m.text.replace(/\n/g,'<br>')}</div></div>`).join('');
+  el.scrollTop=el.scrollHeight;
+}
+function addTyping(){const el=document.getElementById('ai-messages');if(!el)return;el.innerHTML+=`<div class="ai-msg bot" id="typing-indicator"><div class="ai-bubble"><div class="typing"><span></span><span></span><span></span></div></div></div>`;el.scrollTop=el.scrollHeight}
+function removeTyping(){const t=document.getElementById('typing-indicator');if(t)t.remove()}
+function sendQuick(text){document.getElementById('ai-input').value=text;sendAI()}
+async function sendAI(){
+  const input=document.getElementById('ai-input');if(!input)return;
+  const text=input.value.trim();if(!text)return;
+  input.value='';
+  aiMessages.push({role:'user',text});renderAIMessages();addTyping();
+  const active=activeStudents();
+  const unpaid=payments.filter(p=>p.status==='未繳');
+  const context=`張老師專業心算班即時資料：
+在校學生（${active.length}位）：${active.map(s=>`${s.name}（${s.subjects.join('/')}）`).join('、')}
+未繳費學生（${unpaid.length}筆）：${unpaid.map(p=>`${p.name}${p.subject} NT$${p.amount.toLocaleString()}`).join('、')}
+累計收費：NT$${payments.filter(p=>p.status==='已繳').reduce((a,b)=>a+b.amount,0).toLocaleString()}
+累計簽到：963筆，82個上課日
+科目人數：心算${active.filter(s=>s.subjects.includes('心算')).length}人、數學${active.filter(s=>s.subjects.includes('數學')).length}人、英文${active.filter(s=>s.subjects.includes('英文')).length}人`;
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,system:`你是張老師專業心算班的AI管理助手，回答用繁體中文，簡潔有條理。即時資料：\n${context}`,messages:aiMessages.filter((_,i)=>i>0||aiMessages.length===1).slice(-6).map(m=>({role:m.role==='bot'?'assistant':'user',content:m.text}))})});
+    const data=await resp.json();
+    removeTyping();
+    aiMessages.push({role:'bot',text:data.content?.[0]?.text||'抱歉，無法回應。'});renderAIMessages();
+  }catch(e){removeTyping();aiMessages.push({role:'bot',text:'連線錯誤，請稍後再試。'});renderAIMessages()}
+}
+
+// ===== MODALS =====
+function openAddStudentModal(){document.getElementById('add-student-modal').classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function addStudent(){
+  const name=document.getElementById('new-name').value.trim();if(!name){showToast('請輸入學生姓名');return}
+  const subjects=[];
+  if(document.getElementById('sub-abacus').checked)subjects.push('心算');
+  if(document.getElementById('sub-math').checked)subjects.push('數學');
+  if(document.getElementById('sub-eng').checked)subjects.push('英文');
+  if(document.getElementById('sub-care').checked)subjects.push('安親');
+  students.push({id:nextStudentId++,name,subjects,status:'在校',birthday:''});
+  closeModal('add-student-modal');
+  if(currentPage==='students')showPage('students');
+  else if(currentPage==='dashboard')showPage('dashboard');
+syncFromSheets();
+setInterval(syncFromSheets, 30000);
+  showToast(`已新增學生：${name} ✓`);
+}
+
+// ===== TOAST =====
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800)}
+
+document.addEventListener('click',e=>{if(e.target.classList.contains('modal-overlay'))e.target.classList.remove('open')});
+showPage('dashboard');
+syncFromSheets();
+setInterval(syncFromSheets, 30000);
+</script>
+
+
+</body></html>
